@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Query, status, HTTPException
 from sqlmodel import select
 from models import Customer, CustomerCreate, CustomerUpdate, Plan, CustomerPlan, StatusEnum
-from db import SessionDep
+from config.db import SessionDep
 
 router = APIRouter()
 

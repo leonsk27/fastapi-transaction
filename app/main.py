@@ -4,10 +4,28 @@ from fastapi import FastAPI, Request
 from datetime import datetime
 
 from models import Transaction, Invoice
-from db import create_all_tables
+from config.db import create_all_tables
 from .routers import customers, transactions, plans
 
-app = FastAPI(lifespan=create_all_tables)
+app = FastAPI(
+    lifespan=create_all_tables,
+    title="AppTransactionFastAPI",
+    description="API de un Sistema de transacción, usando FastApi con Python",
+    version="0.0.1",
+    openapi_tags=[{
+        "name":"Customers",
+        "description":"Funcionalidades que se tiene para realizar con el cliente (Customer)"
+        },
+        {
+        "name":"Transactions",
+        "description":"Todas las transacciones realizadas por el cliente (Customer)"
+        },
+        {
+        "name":"Plans",
+        "description":"Lista de planes relacionados al cliente (Customer)"
+        },
+    ]
+)
 app.include_router(customers.router)
 app.include_router(transactions.router)
 app.include_router(plans.router)

@@ -2,11 +2,11 @@ from fastapi import FastAPI
 from typing import Annotated
 from fastapi import Depends
 from sqlmodel import Session, create_engine, SQLModel
+from pydantic_settings import BaseSettings 
 
-sqlite_name = "db.sqlite3"
-sqlite_url = f"sqlite:///{sqlite_name}"
+DATABASE_URL = "postgresql://postgres:postgres@localhost/fastapi_transaction"
 
-engine = create_engine(sqlite_url)
+engine = create_engine(DATABASE_URL)
 
 def create_all_tables(app: FastAPI):
     SQLModel.metadata.create_all(engine)

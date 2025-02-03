@@ -1,13 +1,14 @@
 from pydantic import BaseModel, EmailStr, field_validator
 from sqlmodel import SQLModel, Field,Relationship, Session, select
 from enum import Enum
-from db import engine
+from config.db import engine
 
 class StatusEnum(str, Enum):
     ACTIVE = "active"
     INACTIVE = "inactive"
 
 class CustomerPlan(SQLModel, table=True):
+    __tablename__ = 'customer_plan'
     id: int = Field(primary_key=True)
     plan_id: int = Field(foreign_key="plan.id")
     customer_id: int = Field(foreign_key="customer.id")
