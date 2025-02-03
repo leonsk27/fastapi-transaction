@@ -5,8 +5,8 @@ from config.db import SessionDep
 
 router = APIRouter()
 
-#CUSTOMER
-#---------------------------------------------------------------
+# Create
+#----------------------
 @router.post('/customers', response_model=Customer, tags=['Customers'])
 async def create_customer(customer_data: CustomerCreate, session: SessionDep):
     customer = Customer.model_validate(customer_data.model_dump())
@@ -14,7 +14,8 @@ async def create_customer(customer_data: CustomerCreate, session: SessionDep):
     session.commit()
     session.refresh(customer)
     return customer
-
+# GET ONE
+#----------------------
 @router.get('/customers/{customer_id}', response_model=Customer, tags=['Customers'])
 async def read_customer(customer_id: int, session: SessionDep):
     customer_db = session.get(Customer, customer_id)
@@ -23,7 +24,8 @@ async def read_customer(customer_id: int, session: SessionDep):
             status_code=status.HTTP_404_NOT_FOUND, detail="Customer doesn't exits"
         )
     return customer_db
-
+# Update
+#----------------------
 @router.patch('/customers/{customer_id}', response_model=Customer, status_code=status.HTTP_201_CREATED, tags=['Customers'])
 async def update_customer(customer_id: int, customer_data: CustomerUpdate , session: SessionDep):
     customer_db = session.get(Customer, customer_id)
@@ -37,8 +39,8 @@ async def update_customer(customer_id: int, customer_data: CustomerUpdate , sess
     session.commit()
     session.refresh(customer_db)
     return customer_db
-
-
+# Delete
+#----------------------
 @router.delete('/customers/{customer_id}', tags=['Customers'])
 async def delete_customer(customer_id: int, session: SessionDep):
     customer_db = session.get(Customer, customer_id)
@@ -48,7 +50,8 @@ async def delete_customer(customer_id: int, session: SessionDep):
     session.delete(customer_db)
     session.commit()
     return {"detail": "ok"}
-
+# List All
+#----------------------
 @router.get('/customers', response_model= list[Customer], tags=['Customers'])
 async def list_customer(session: SessionDep):
     return session.exec(select(Customer)).all()

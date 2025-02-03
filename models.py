@@ -9,6 +9,7 @@ from sqlalchemy import Column, DateTime, func
 class StatusEnum(str, Enum):
     ACTIVE = "active"
     INACTIVE = "inactive"
+
 '''
 Customer Plan
 ------------------------------
@@ -35,11 +36,16 @@ class CustomerPlan(SQLModel, table=True):
 Plan
 ------------------------------
 '''
-class Plan(SQLModel, table = True):
-    id: int | None = Field(primary_key=True)
+class PlanBase(SQLModel):
     name: str = Field(default=None)
     price: int = Field(default=None)
-    description: str = Field(default=None)
+    description: str | None = Field(default=None)
+class PlanCreate(PlanBase):
+    pass
+class PlanUpdate(PlanBase):
+    pass
+class Plan(PlanBase, table = True):
+    id: int | None = Field(default = None, primary_key=True)
     created_at: Optional[datetime] = Field(
         default=None,
         sa_column=Column(
