@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Query, status, HTTPException
 from sqlmodel import select
-from models import Customer, CustomerCreate, CustomerUpdate, Plan, CustomerPlan, StatusEnum
+from models import Customer, CustomerCreate, CustomerUpdate, Plan, CustomerPlan, StatusEnum, TransactionCreate,Transaction
 from config.db import SessionDep
 
 router = APIRouter()
@@ -55,7 +55,8 @@ async def delete_customer(customer_id: int, session: SessionDep):
 @router.get('/customers', response_model= list[Customer], tags=['Customers'])
 async def list_customer(session: SessionDep):
     return session.exec(select(Customer)).all()
-
+# Create - Customer Plans
+#----------------------
 @router.post("/customers/{customer_id}/plans/{plan_id}", tags=['Customers'])
 async def subscribe_customer_to_plan(
     customer_id: int, plan_id:int, session: SessionDep, plan_status: StatusEnum = Query()
@@ -74,7 +75,8 @@ async def subscribe_customer_to_plan(
     session.commit()
     session.refresh(customer_plan_db)
     return customer_plan_db
-
+# List All - Customer Plans
+#----------------------
 @router.get("/customers/{customer_id}/plans", tags=['Customers'])
 async def subscribe_customer_to_plan(
     customer_id: int, session: SessionDep, plan_status:StatusEnum = Query()
@@ -91,3 +93,33 @@ async def subscribe_customer_to_plan(
     )
     plans = session.exec(query).all()
     return plans
+# Create - Customer Transactions
+#----------------------
+@router.post("/customers/{customer_id}/transactions",response_model=Transaction,tags=['Customers'])
+async def create_customer_transaction(customer_id:int, transaction_data: TransactionCreate, session:SessionDep):
+    customer_db = session.get(Customer,customer_id)
+    if not customer_db:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, detail="Customer doen't exits"
+        )
+    customer_transaction_data_dict = transaction_data.model_dump(exclude_unset=True)
+    customer_transaction_data_dict['customer_id'] = customer_id
+
+    transaction_db = Transaction.model_validate(customer_transaction_data_dict)
+    session.add(transaction_db)
+    session.commit()
+    session.refresh(transaction_db)
+    return transaction_db
+# List All - Customer Transactions
+#----------------------
+@router.get('/customer/{customer_id}/transactions',tags=['Customers'])
+async def list_customer_transaction(customer_id:int, session:SessionDep):
+    customer_db = session.get(Customer,customer_id)
+    if not customer_db:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, detail="Customer doen't exits"
+        )
+    
+    query = select(Transaction).where(Transaction.customer_id==customer_id)
+    transactions_list = session.exec(query).all()
+    return transactions_list

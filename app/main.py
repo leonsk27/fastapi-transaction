@@ -3,7 +3,6 @@ import time
 from fastapi import FastAPI, Request
 from datetime import datetime
 
-from models import Transaction, Invoice
 from config.db import create_all_tables
 from .routers import customers, transactions, plans
 
@@ -30,7 +29,7 @@ app.include_router(customers.router)
 app.include_router(transactions.router)
 app.include_router(plans.router)
 
-
+'''
 @app.middleware("http")
 async def log_request_time(request: Request, call_next):
     start_time = time.time()
@@ -47,13 +46,13 @@ async def log_request_headers(request: Request, call_next):
         print(f"{header}: {value}")
     response = await call_next(request) 
     return response
-
+'''
 
 @app.get('/')
 async def root():
     return {"message":"Hola, Mundo Henry!"}
 
-
+'''
 country_timezones = {
     "CO" : "America/Bogota",
     "MX" : "America/Mexico_City",
@@ -76,3 +75,4 @@ async def get_time_by_iso(iso_code: str):
 @app.post('/invoices')
 async def create_invoice(invoice_data: Invoice):
     return invoice_data
+'''

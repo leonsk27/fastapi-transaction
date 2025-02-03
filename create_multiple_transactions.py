@@ -1,6 +1,6 @@
 from sqlmodel import Session
 
-from db import engine
+from config.db import engine
 from models import Customer, Transaction
 
 session = Session(engine)

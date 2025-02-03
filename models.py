@@ -111,7 +111,8 @@ class TransactionBase(SQLModel):
     ammount : int = Field(default = None)
     description: str = Field(default = None)
 class TransactionCreate(TransactionBase):
-    customer_id: int = Field(foreign_key="customer.id")
+    pass
+    #customer_id: int = Field(foreign_key="customer.id")
 class Transaction(TransactionBase, table = True):
     id: int | None = Field(default = None, primary_key=True)
     customer_id: int = Field(foreign_key="customer.id")
@@ -133,6 +134,7 @@ class Transaction(TransactionBase, table = True):
 INVOICE
 ------------------------------
 '''
+'''
 class Invoice(BaseModel):
     id: int
     customer: Customer
@@ -143,3 +145,4 @@ class Invoice(BaseModel):
     def ammount_total(self):
         return sum(transaction.ammount for transaction in self.transactions)
 
+'''
