@@ -73,12 +73,6 @@ async def get_time_by_iso(iso_code: str):
 
 
 
-
-
-
-
-
-
 @app.post('/invoices')
 async def create_invoice(invoice_data: Invoice):
     return invoice_data
