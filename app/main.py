@@ -1,35 +1,34 @@
-import zoneinfo
-import time
-from fastapi import FastAPI, Request
-from datetime import datetime
+from fastapi import FastAPI
 
 from config.db import create_all_tables
-from .routers import customers, transactions, plans
+
+from .routers import customers, plans, transactions
 
 app = FastAPI(
     lifespan=create_all_tables,
     title="AppTransactionFastAPI",
     description="API de un Sistema de transacción, usando FastApi con Python",
     version="0.0.1",
-    openapi_tags=[{
-        "name":"Customers",
-        "description":"Funcionalidades que se tiene para realizar con el cliente (Customer)"
+    openapi_tags=[
+        {
+            "name": "Customers",
+            "description": "Funcionalidades que se tiene para realizar con el cliente (Customer)",
         },
         {
-        "name":"Transactions",
-        "description":"Todas las transacciones realizadas por el cliente (Customer)"
+            "name": "Transactions",
+            "description": "Todas las transacciones realizadas por el cliente (Customer)",
         },
         {
-        "name":"Plans",
-        "description":"Lista de planes relacionados al cliente (Customer)"
+            "name": "Plans",
+            "description": "Lista de planes relacionados al cliente (Customer)",
         },
-    ]
+    ],
 )
 app.include_router(customers.router)
 app.include_router(transactions.router)
 app.include_router(plans.router)
 
-'''
+"""
 @app.middleware("http")
 async def log_request_time(request: Request, call_next):
     start_time = time.time()
@@ -46,13 +45,15 @@ async def log_request_headers(request: Request, call_next):
         print(f"{header}: {value}")
     response = await call_next(request) 
     return response
-'''
+"""
 
-@app.get('/')
+
+@app.get("/")
 async def root():
-    return {"message":"Hola, Mundo Henry!"}
+    return {"message": "Hola, Mundo Henry!"}
 
-'''
+
+"""
 country_timezones = {
     "CO" : "America/Bogota",
     "MX" : "America/Mexico_City",
@@ -75,4 +76,4 @@ async def get_time_by_iso(iso_code: str):
 @app.post('/invoices')
 async def create_invoice(invoice_data: Invoice):
     return invoice_data
-'''
+"""
