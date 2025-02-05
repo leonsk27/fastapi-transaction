@@ -1,8 +1,11 @@
 from typing import Annotated
+
 from fastapi import Depends, FastAPI, HTTPException, status
 from fastapi.security import HTTPBasic, HTTPBasicCredentials
-from .db import init_db
-from .routers import customers, plans, transactions
+
+from app.customers import routes as Customers
+from app.db import create_db_and_tables
+from app.routers import plans, transactions
 
 version = "v1"
 
@@ -15,23 +18,23 @@ This REST API is able to;
 - Add tags to Books e.t.c.
     """
 
-version_prefix =f"/api/{version}"
+version_prefix = f"/api/{version}"
 
 app = FastAPI(
-    lifespan=init_db,
-    #lifespan=life_spna,
+    lifespan=create_db_and_tables,
+    # lifespan=life_spna,
     title="AppTransactionFastAPI",
     description="API de un Sistema de transacción, usando FastApi con Python",
-    version="0.0.1",
+    version=version,
     license_info={"name": "MIT License", "url": "https://opensource.org/license/mit"},
     contact={
         "name": "Henry Alejandro Taby Zenteno",
         "url": "https://github.com/henrytaby",
         "email": "henry.taby@gmail.com",
     },
-    #openapi_url=f"{version_prefix}/openapi.json",
-    #docs_url=f"{version_prefix}/docs",
-    #redoc_url=f"{version_prefix}/redoc",
+    # openapi_url=f"{version_prefix}/openapi.json",
+    # docs_url=f"{version_prefix}/docs",
+    # redoc_url=f"{version_prefix}/redoc",
     openapi_tags=[
         {
             "name": "Customers",
@@ -47,7 +50,7 @@ app = FastAPI(
         },
     ],
 )
-app.include_router(customers.router)
+app.include_router(Customers.router, prefix="/customers", tags=["Customers"])
 app.include_router(transactions.router)
 app.include_router(plans.router)
 
@@ -72,10 +75,11 @@ async def log_request_headers(request: Request, call_next):
 
 security = HTTPBasic()
 
+
 @app.get("/")
-async def root(credentials: Annotated[HTTPBasicCredentials, Depends(security)] ):
+async def root(credentials: Annotated[HTTPBasicCredentials, Depends(security)]):
     print(credentials)
-    if credentials.username == "admin" and credentials.password=="123":
+    if credentials.username == "admin" and credentials.password == "123":
         return {"message": f"Hola, Mundo {credentials.username}!"}
     else:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED)

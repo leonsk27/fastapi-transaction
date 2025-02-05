@@ -1,0 +1,14 @@
+{
+    //"window.zoomLevel": 1.7,
+    "editor.fontSize": 16,
+    "screencastMode.fontSize": 36,
+    "terminal.integrated.fontSize": 16,
+    "[python]": {
+        "editor.codeActionsOnSave": {
+            "source.organizeImports": "explicit",
+            "source.fixAll": "explicit"
+        }
+    },
+    "editor.formatOnSave": true,
+    "editor.defaultFormatter": "charliermarsh.ruff",
+}

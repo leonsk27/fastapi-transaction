@@ -4,9 +4,13 @@ from fastapi import Depends
 from sqlmodel import Session, create_engine, SQLModel
 from app.config import Config
 
+'''
+Docs about this implementation
+https://fastapi.tiangolo.com/tutorial/sql-databases/#run-the-app
+'''
 engine = create_engine(Config.DATABASE_URL, echo = False)
 
-def init_db(app: FastAPI):
+def create_db_and_tables(app: FastAPI):
     SQLModel.metadata.create_all(engine)
     #print(f"--[>] Server is starting ...")
     yield
