@@ -6,17 +6,17 @@ from fastapi.security import HTTPBasic, HTTPBasicCredentials
 from app.customers import routes as Customers
 from app.db import create_db_and_tables
 from app.plans import routes as Plans
-from app.routers import transactions
+from app.transactions import routes as Transactions
 
 version = "v1"
 
 description = """
-A REST API for a book review web service.
+API de un Sistema de transacción, usando FastApi con Python.
 
 This REST API is able to;
-- Create Read Update And delete books
-- Add reviews to books
-- Add tags to Books e.t.c.
+- Crear, Leer, Actualizar y eliminar Customers, Plans y Transactions
+- Añadir relación de Customers con Planes, de Customers con Transacciones
+
     """
 
 version_prefix = f"/api/{version}"
@@ -25,7 +25,7 @@ app = FastAPI(
     lifespan=create_db_and_tables,
     # lifespan=life_spna,
     title="AppTransactionFastAPI",
-    description="API de un Sistema de transacción, usando FastApi con Python",
+    description=description,
     version=version,
     license_info={"name": "MIT License", "url": "https://opensource.org/license/mit"},
     contact={
@@ -52,7 +52,7 @@ app = FastAPI(
     ],
 )
 app.include_router(Customers.router, prefix="/customers", tags=["Customers"])
-app.include_router(transactions.router)
+app.include_router(Transactions.router, prefix="/transaction", tags=["Transactions"])
 app.include_router(Plans.router, prefix="/plans", tags=["Plans"])
 
 """
