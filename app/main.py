@@ -5,7 +5,8 @@ from fastapi.security import HTTPBasic, HTTPBasicCredentials
 
 from app.customers import routes as Customers
 from app.db import create_db_and_tables
-from app.routers import plans, transactions
+from app.plans import routes as Plans
+from app.routers import transactions
 
 version = "v1"
 
@@ -52,7 +53,7 @@ app = FastAPI(
 )
 app.include_router(Customers.router, prefix="/customers", tags=["Customers"])
 app.include_router(transactions.router)
-app.include_router(plans.router)
+app.include_router(Plans.router, prefix="/plans", tags=["Plans"])
 
 """
 @app.middleware("http")
