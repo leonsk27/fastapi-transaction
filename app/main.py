@@ -1,14 +1,37 @@
-from fastapi import FastAPI
-
-from config.db import create_all_tables
-
+from typing import Annotated
+from fastapi import Depends, FastAPI, HTTPException, status
+from fastapi.security import HTTPBasic, HTTPBasicCredentials
+from .db import init_db
 from .routers import customers, plans, transactions
 
+version = "v1"
+
+description = """
+A REST API for a book review web service.
+
+This REST API is able to;
+- Create Read Update And delete books
+- Add reviews to books
+- Add tags to Books e.t.c.
+    """
+
+version_prefix =f"/api/{version}"
+
 app = FastAPI(
-    lifespan=create_all_tables,
+    lifespan=init_db,
+    #lifespan=life_spna,
     title="AppTransactionFastAPI",
     description="API de un Sistema de transacción, usando FastApi con Python",
     version="0.0.1",
+    license_info={"name": "MIT License", "url": "https://opensource.org/license/mit"},
+    contact={
+        "name": "Henry Alejandro Taby Zenteno",
+        "url": "https://github.com/henrytaby",
+        "email": "henry.taby@gmail.com",
+    },
+    #openapi_url=f"{version_prefix}/openapi.json",
+    #docs_url=f"{version_prefix}/docs",
+    #redoc_url=f"{version_prefix}/redoc",
     openapi_tags=[
         {
             "name": "Customers",
@@ -47,10 +70,15 @@ async def log_request_headers(request: Request, call_next):
     return response
 """
 
+security = HTTPBasic()
 
 @app.get("/")
-async def root():
-    return {"message": "Hola, Mundo Henry!"}
+async def root(credentials: Annotated[HTTPBasicCredentials, Depends(security)] ):
+    print(credentials)
+    if credentials.username == "admin" and credentials.password=="123":
+        return {"message": f"Hola, Mundo {credentials.username}!"}
+    else:
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED)
 
 
 """

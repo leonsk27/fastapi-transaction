@@ -1,8 +1,8 @@
 from fastapi import APIRouter, Query
 from sqlmodel import select
 
-from config.db import SessionDep
-from models import Transaction
+from app.db import SessionDep
+from app.models import Transaction
 
 router = APIRouter()
 

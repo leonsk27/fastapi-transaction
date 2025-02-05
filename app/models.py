@@ -6,7 +6,7 @@ from pydantic import EmailStr, field_validator
 from sqlalchemy import Column, DateTime, func
 from sqlmodel import Field, Relationship, Session, SQLModel, select
 
-from config.db import engine
+from app.db import engine
 
 
 class StatusEnum(str, Enum):

@@ -1,13 +1,27 @@
-from fastapi import APIRouter, Query, status, HTTPException
+from fastapi import APIRouter, HTTPException, Query, status
 from sqlmodel import select
-from models import Customer, CustomerCreate, CustomerUpdate, Plan, CustomerPlan, StatusEnum, TransactionCreate,Transaction
-from config.db import SessionDep
+
+from app.db import SessionDep
+from app.models import (
+    Customer,
+    CustomerCreate,
+    CustomerPlan,
+    CustomerUpdate,
+    Plan,
+    StatusEnum,
+    Transaction,
+    TransactionCreate,
+)
 
 router = APIRouter()
 
 # Create
 #----------------------
-@router.post('/customers', response_model=Customer, tags=['Customers'])
+@router.post(
+        '/customers', response_model=Customer,
+        status_code=status.HTTP_201_CREATED,
+        tags=['Customers']
+)
 async def create_customer(customer_data: CustomerCreate, session: SessionDep):
     customer = Customer.model_validate(customer_data.model_dump())
     session.add(customer)
