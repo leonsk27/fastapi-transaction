@@ -6,6 +6,7 @@ from fastapi.security import HTTPBasic, HTTPBasicCredentials
 from app.customers import routes as Customers
 from app.db import create_db_and_tables
 from app.plans import routes as Plans
+from app.categorias import routes as CategoriaRoutes
 from app.products import routes as Products
 from app.transactions import routes as Transactions
 
@@ -50,11 +51,20 @@ app = FastAPI(
             "name": "Plans",
             "description": "Lista de planes relacionados al cliente (Customer)",
         },
+        {
+            "name": "Categorias",
+            "description": "Categorías como embutidos, gaseosas, etc. que agrupan productos.",
+        },
+        {
+            "name": "Products",
+            "description": "Productos para un almacen",
+        },
     ],
 )
 app.include_router(Customers.router, prefix="/customers", tags=["Customers"])
 app.include_router(Transactions.router, prefix="/transaction", tags=["Transactions"])
 app.include_router(Plans.router, prefix="/plans", tags=["Plans"])
+app.include_router(CategoriaRoutes.router, prefix="/categorias", tags=["Categorias"])
 app.include_router(Products.router, prefix="/products", tags=["Products"])
 
 """

@@ -1,6 +1,6 @@
 from datetime import datetime
 from enum import Enum
-from typing import Optional
+from typing import Optional, List
 
 from pydantic import EmailStr, field_validator
 from sqlalchemy import Column, DateTime, func
@@ -153,16 +153,42 @@ class Transaction(TransactionBase, table=True):
         sa_column=Column(DateTime(timezone=True), onupdate=func.now(), nullable=True),
     )
 
-"""
-TRANSACTION
-------------------------------
-"""
+# --------------------------
+# CATEGORÍA
+# --------------------------
+class CategoriaBase(SQLModel):
+    nombre: str
+    descripcion: Optional[str] = None
 
+class CategoriaCreate(CategoriaBase):
+    pass
+
+class CategoriaUpdate(CategoriaBase):
+    pass
+
+class Categoria(CategoriaBase, table=True):
+    id: Optional[int] = Field(default=None, primary_key=True)
+    productos: List["Product"] = Relationship(back_populates="categoria")
+
+    created_at: Optional[datetime] = Field(
+        default=None,
+        sa_column=Column(DateTime(timezone=True), server_default=func.now())
+    )
+    updated_at: Optional[datetime] = Field(
+        default=None,
+        sa_column=Column(DateTime(timezone=True), onupdate=func.now())
+    )
+
+
+# --------------------------
+# PRODUCTO (con relación a categoría)
+# --------------------------
 class ProductBase(SQLModel):
     name: str
     description: Optional[str] = None
     price: float
     stock: int
+    categoria_id: Optional[int] = Field(default=None, foreign_key="categoria.id")
 
 class ProductCreate(ProductBase):
     pass
@@ -172,13 +198,15 @@ class ProductUpdate(ProductBase):
 
 class Product(ProductBase, table=True):
     id: Optional[int] = Field(default=None, primary_key=True)
+    categoria: Optional[Categoria] = Relationship(back_populates="productos")
+
     created_at: Optional[datetime] = Field(
         default=None,
-        sa_column=Column(DateTime(timezone=True), server_default=func.now(), nullable=True),
+        sa_column=Column(DateTime(timezone=True), server_default=func.now())
     )
     updated_at: Optional[datetime] = Field(
         default=None,
-        sa_column=Column(DateTime(timezone=True), onupdate=func.now(), nullable=True),
+        sa_column=Column(DateTime(timezone=True), onupdate=func.now())
     )
 
 
