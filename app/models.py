@@ -153,6 +153,35 @@ class Transaction(TransactionBase, table=True):
         sa_column=Column(DateTime(timezone=True), onupdate=func.now(), nullable=True),
     )
 
+"""
+TRANSACTION
+------------------------------
+"""
+
+class ProductBase(SQLModel):
+    name: str
+    description: Optional[str] = None
+    price: float
+    stock: int
+
+class ProductCreate(ProductBase):
+    pass
+
+class ProductUpdate(ProductBase):
+    pass
+
+class Product(ProductBase, table=True):
+    id: Optional[int] = Field(default=None, primary_key=True)
+    created_at: Optional[datetime] = Field(
+        default=None,
+        sa_column=Column(DateTime(timezone=True), server_default=func.now(), nullable=True),
+    )
+    updated_at: Optional[datetime] = Field(
+        default=None,
+        sa_column=Column(DateTime(timezone=True), onupdate=func.now(), nullable=True),
+    )
+
+
 
 """
 INVOICE
